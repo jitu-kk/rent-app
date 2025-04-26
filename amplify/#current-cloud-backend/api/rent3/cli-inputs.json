@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "serviceConfiguration": {
+    "apiName": "rent3",
+    "serviceName": "AppSync",
+    "gqlSchemaPath": "C:\\Users\\Km Habib\\Documents\\GitHub\\Rent_Project\\rent\\amplify\\backend\\api\\rent3\\schema.graphql",
+    "defaultAuthType": {
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authrent37c3dc964"
+    },
+    "conflictResolution": {},
+    "additionalAuthTypes": [
+      {
+        "mode": "AWS_IAM"
+      },
+      {
+        "mode": "API_KEY",
+        "expirationTime": 7,
+        "apiKeyExpirationDate": "2022-04-05T09:41:38.693Z",
+        "keyDescription": "This is api update"
+      }
+    ]
+  }
+}

@@ -1,0 +1,409 @@
+type Listing @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  title: String!
+  categoryName: String
+  categoryID: String
+  description: String
+  images: String
+  locationID: String
+  locationName: String
+  owner: String
+  rentValue: String
+  userID: ID
+  commonID: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime!
+}
+
+type RentOrder {
+  id: ID!
+  advId: ID!
+  borrowerUserId: ID!
+  lenderUserID: ID!
+  rentValue: String
+  borrowerEmailID: String
+  lenderEmailID: String
+  commonID: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime!
+  listing: Listing @aws_iam @aws_cognito_user_pools
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelListingConnection @aws_iam @aws_cognito_user_pools {
+  items: [Listing]!
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelListingFilterInput {
+  id: ModelIDInput
+  title: ModelStringInput
+  categoryName: ModelStringInput
+  categoryID: ModelStringInput
+  description: ModelStringInput
+  images: ModelStringInput
+  locationID: ModelStringInput
+  locationName: ModelStringInput
+  owner: ModelStringInput
+  rentValue: ModelStringInput
+  userID: ModelIDInput
+  commonID: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelListingFilterInput]
+  or: [ModelListingFilterInput]
+  not: ModelListingFilterInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Query {
+  getRentOrder(id: ID!): RentOrder
+  listRentOrders(filter: ModelRentOrderFilterInput, limit: Int, nextToken: String): ModelRentOrderConnection
+  geteOrderByBorrowerID(borrowerUserId: ID, createdAt: ModelStringKeyConditionInput, sortDirection: ModelSortDirection, filter: ModelRentOrderFilterInput, limit: Int, nextToken: String): ModelRentOrderConnection
+  geteOrderByLenderID(lenderUserID: ID, createdAt: ModelStringKeyConditionInput, sortDirection: ModelSortDirection, filter: ModelRentOrderFilterInput, limit: Int, nextToken: String): ModelRentOrderConnection
+  getListing(id: ID!): Listing @aws_iam @aws_cognito_user_pools
+  listListings(filter: ModelListingFilterInput, limit: Int, nextToken: String): ModelListingConnection @aws_iam @aws_cognito_user_pools
+  getListingByCreatedAt(commonID: String, createdAt: ModelStringKeyConditionInput, sortDirection: ModelSortDirection, filter: ModelListingFilterInput, limit: Int, nextToken: String): ModelListingConnection @aws_iam @aws_cognito_user_pools
+  searchListings(filter: SearchableListingFilterInput, sort: SearchableListingSortInput, limit: Int, nextToken: String, from: Int): SearchableListingConnection @aws_iam @aws_cognito_user_pools
+}
+
+input CreateListingInput {
+  id: ID
+  title: String!
+  categoryName: String
+  categoryID: String
+  description: String
+  images: String
+  locationID: String
+  locationName: String
+  owner: String
+  rentValue: String
+  userID: ID
+  commonID: String
+  createdAt: AWSDateTime
+}
+
+input UpdateListingInput {
+  id: ID!
+  title: String
+  categoryName: String
+  categoryID: String
+  description: String
+  images: String
+  locationID: String
+  locationName: String
+  owner: String
+  rentValue: String
+  userID: ID
+  commonID: String
+  createdAt: AWSDateTime
+}
+
+input DeleteListingInput {
+  id: ID!
+}
+
+type Mutation {
+  createListing(input: CreateListingInput!, condition: ModelListingConditionInput): Listing
+  updateListing(input: UpdateListingInput!, condition: ModelListingConditionInput): Listing
+  deleteListing(input: DeleteListingInput!, condition: ModelListingConditionInput): Listing
+  createRentOrder(input: CreateRentOrderInput!, condition: ModelRentOrderConditionInput): RentOrder
+  updateRentOrder(input: UpdateRentOrderInput!, condition: ModelRentOrderConditionInput): RentOrder
+  deleteRentOrder(input: DeleteRentOrderInput!, condition: ModelRentOrderConditionInput): RentOrder
+}
+
+input ModelListingConditionInput {
+  title: ModelStringInput
+  categoryName: ModelStringInput
+  categoryID: ModelStringInput
+  description: ModelStringInput
+  images: ModelStringInput
+  locationID: ModelStringInput
+  locationName: ModelStringInput
+  rentValue: ModelStringInput
+  userID: ModelIDInput
+  commonID: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelListingConditionInput]
+  or: [ModelListingConditionInput]
+  not: ModelListingConditionInput
+}
+
+type Subscription {
+  onCreateRentOrder: RentOrder @aws_subscribe(mutations: ["createRentOrder"])
+  onUpdateRentOrder: RentOrder @aws_subscribe(mutations: ["updateRentOrder"])
+  onDeleteRentOrder: RentOrder @aws_subscribe(mutations: ["deleteRentOrder"])
+  onCreateListing: Listing @aws_subscribe(mutations: ["createListing"]) @aws_iam @aws_cognito_user_pools
+  onUpdateListing: Listing @aws_subscribe(mutations: ["updateListing"]) @aws_iam @aws_cognito_user_pools
+  onDeleteListing: Listing @aws_subscribe(mutations: ["deleteListing"]) @aws_iam @aws_cognito_user_pools
+}
+
+type ModelRentOrderConnection {
+  items: [RentOrder]!
+  nextToken: String
+}
+
+input ModelRentOrderFilterInput {
+  id: ModelIDInput
+  advId: ModelIDInput
+  borrowerUserId: ModelIDInput
+  lenderUserID: ModelIDInput
+  rentValue: ModelStringInput
+  borrowerEmailID: ModelStringInput
+  lenderEmailID: ModelStringInput
+  commonID: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelRentOrderFilterInput]
+  or: [ModelRentOrderFilterInput]
+  not: ModelRentOrderFilterInput
+}
+
+input CreateRentOrderInput {
+  id: ID
+  advId: ID!
+  borrowerUserId: ID!
+  lenderUserID: ID!
+  rentValue: String
+  borrowerEmailID: String
+  lenderEmailID: String
+  commonID: String
+  createdAt: AWSDateTime
+}
+
+input UpdateRentOrderInput {
+  id: ID!
+  advId: ID
+  borrowerUserId: ID
+  lenderUserID: ID
+  rentValue: String
+  borrowerEmailID: String
+  lenderEmailID: String
+  commonID: String
+  createdAt: AWSDateTime
+}
+
+input DeleteRentOrderInput {
+  id: ID!
+}
+
+input ModelRentOrderConditionInput {
+  advId: ModelIDInput
+  borrowerUserId: ModelIDInput
+  lenderUserID: ModelIDInput
+  rentValue: ModelStringInput
+  borrowerEmailID: ModelStringInput
+  lenderEmailID: ModelStringInput
+  commonID: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelRentOrderConditionInput]
+  or: [ModelRentOrderConditionInput]
+  not: ModelRentOrderConditionInput
+}
+
+input ModelStringKeyConditionInput {
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  between: [String]
+  beginsWith: String
+}
+
+input SearchableStringFilterInput {
+  ne: String
+  gt: String
+  lt: String
+  gte: String
+  lte: String
+  eq: String
+  match: String
+  matchPhrase: String
+  matchPhrasePrefix: String
+  multiMatch: String
+  exists: Boolean
+  wildcard: String
+  regexp: String
+  range: [String]
+}
+
+input SearchableIntFilterInput {
+  ne: Int
+  gt: Int
+  lt: Int
+  gte: Int
+  lte: Int
+  eq: Int
+  range: [Int]
+}
+
+input SearchableFloatFilterInput {
+  ne: Float
+  gt: Float
+  lt: Float
+  gte: Float
+  lte: Float
+  eq: Float
+  range: [Float]
+}
+
+input SearchableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SearchableIDFilterInput {
+  ne: ID
+  gt: ID
+  lt: ID
+  gte: ID
+  lte: ID
+  eq: ID
+  match: ID
+  matchPhrase: ID
+  matchPhrasePrefix: ID
+  multiMatch: ID
+  exists: Boolean
+  wildcard: ID
+  regexp: ID
+  range: [ID]
+}
+
+input SearchableListingFilterInput {
+  id: SearchableIDFilterInput
+  title: SearchableStringFilterInput
+  categoryName: SearchableStringFilterInput
+  categoryID: SearchableStringFilterInput
+  description: SearchableStringFilterInput
+  images: SearchableStringFilterInput
+  locationID: SearchableStringFilterInput
+  locationName: SearchableStringFilterInput
+  owner: SearchableStringFilterInput
+  rentValue: SearchableStringFilterInput
+  userID: SearchableIDFilterInput
+  commonID: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  and: [SearchableListingFilterInput]
+  or: [SearchableListingFilterInput]
+  not: SearchableListingFilterInput
+}
+
+enum SearchableSortDirection {
+  asc
+  desc
+}
+
+enum SearchableListingSortableFields {
+  id
+  title
+  categoryName
+  categoryID
+  description
+  images
+  locationID
+  locationName
+  owner
+  rentValue
+  userID
+  commonID
+  createdAt
+}
+
+input SearchableListingSortInput {
+  field: SearchableListingSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableListingConnection @aws_iam @aws_cognito_user_pools {
+  items: [Listing]!
+  nextToken: String
+  total: Int
+}

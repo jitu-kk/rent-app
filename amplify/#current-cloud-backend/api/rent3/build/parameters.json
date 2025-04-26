@@ -1,0 +1,20 @@
+{
+    "CreateAPIKey": 1,
+    "AppSyncApiName": "rent3",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authrent37c3dc964",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "S3DeploymentBucket": "amplify-rent3-dev-215114-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/073bbd780ddd70a8da5af098c2b3f7164c6120fe"
+}

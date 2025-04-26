@@ -1,0 +1,53 @@
+type Listing
+  @model
+  @key(
+    name: "listingByCreatedAt"
+    fields: ["commonID", "createdAt"]
+    queryField: "getListingByCreatedAt"
+  )
+  @auth(
+    rules: [
+      { allow: owner }
+      { allow: public, provider: iam, operations: [read] }
+      { allow: private, provider: userPools }
+    ]
+  )
+  @searchable {
+  id: ID!
+  title: String!
+  categoryName: String
+  categoryID: String
+  description: String
+  images: String
+  locationID: String
+  locationName: String
+  owner: String
+  rentValue: String
+  userID: ID
+  commonID: String
+  createdAt: AWSDateTime
+}
+
+type RentOrder
+  @model
+  @key(
+    name: "OrderByBorrowerID"
+    fields: ["borrowerUserId", "createdAt"]
+    queryField: "geteOrderByBorrowerID"
+  )
+  @key(
+    name: "OrderByLenderID"
+    fields: ["lenderUserID", "createdAt"]
+    queryField: "geteOrderByLenderID"
+  ) {
+  id: ID!
+  advId: ID!
+  borrowerUserId: ID!
+  lenderUserID: ID!
+  rentValue: String
+  borrowerEmailID: String
+  lenderEmailID: String
+  listing: Listing @connection(fields: ["advId"])
+  commonID: String
+  createdAt: AWSDateTime
+}
